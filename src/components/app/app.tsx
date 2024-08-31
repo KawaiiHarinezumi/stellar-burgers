@@ -20,14 +20,18 @@ import {
 import { AppHeader, Modal, OrderInfo, IngredientDetails } from '@components';
 
 import { OnlyAuth, OnlyUnAuth } from '../protected-route/protected-route';
+import { CenteredLocation } from '../centered-location/centered-location';
 import { checkUserAuth } from '../../services/auth/actions';
 import { getIngredients } from '../../services/ingredients/actions';
+import { getOrderInfoData } from '../../services/orderInfo/slice';
 
 const App = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
   const backgroundLocation = location.state?.background;
+
+  const orderNumber = useSelector(getOrderInfoData);
 
   useEffect(() => {
     dispatch(checkUserAuth());
@@ -43,11 +47,21 @@ const App = () => {
       <AppHeader />
       <Routes location={backgroundLocation || location}>
         <Route path='/' element={<ConstructorPage />} />
-        <Route path='/ingredients/:id' element={<IngredientDetails />} />
-        <Route path='/feed'>
-          <Route index element={<Feed />} />
-          <Route path=':number' element={<OrderInfo />} />
-        </Route>
+        <Route
+          path='/ingredients/:id'
+          element={<CenteredLocation title='Детали ингредиента'> <IngredientDetails/> </CenteredLocation> }
+        />
+        <Route 
+          path='/feed'
+          element={<Feed />} 
+        />
+        <Route 
+          path='/feed/:number'
+          element={
+            <CenteredLocation title={`#${String(orderNumber ? orderNumber.number : 0).padStart(6, '0')}`} textStyle='digits-default'>
+              <OrderInfo />
+            </CenteredLocation>} 
+        />
         <Route path='/login' element={<OnlyUnAuth children={<Login />} />} />
         <Route
           path='/register'
@@ -62,10 +76,12 @@ const App = () => {
           element={<OnlyUnAuth children={<ResetPassword />} />}
         />
         <Route
-          path='/profile'
+          path='/profile/orders/:number'
           element={
             <OnlyAuth>
-              <Profile />
+              <CenteredLocation title={`#${String(orderNumber ? orderNumber.number : 0).padStart(6, '0')}`} textStyle='digits-default'>
+                <OrderInfo/>
+              </CenteredLocation>
             </OnlyAuth>
           }
         />
@@ -78,21 +94,21 @@ const App = () => {
           }
         />
         <Route
-          path='/profile/orders/:number'
+          path='/profile'
           element={
             <OnlyAuth>
-              <OrderInfo />
+              <Profile />
             </OnlyAuth>
           }
         />
-        <Route path='*' element={<NotFound404 />} />
+        <Route path='*' element={<CenteredLocation> <NotFound404 /> </CenteredLocation>} />
       </Routes>
       {backgroundLocation && (
         <Routes>
           <Route
             path='/feed/:number'
             element={
-              <Modal title='Детали заказа' onClose={closeModal}>
+              <Modal title={`#${String(orderNumber ? orderNumber.number : 0).padStart(6, '0')}`} onClose={closeModal} titleStyle='digits-default'>
                 <OrderInfo />
               </Modal>
             }
@@ -100,7 +116,7 @@ const App = () => {
           <Route
             path='/ingredients/:id'
             element={
-              <Modal title='Детали ингридиента' onClose={closeModal}>
+              <Modal title='Детали ингредиента' onClose={closeModal}>
                 <IngredientDetails />
               </Modal>
             }
@@ -109,7 +125,7 @@ const App = () => {
             path='/profile/orders/:number'
             element={
               <OnlyAuth>
-                <Modal title='Детали заказа' onClose={closeModal}>
+                <Modal title={`#${String(orderNumber ? orderNumber.number : 0).padStart(6, '0')}`} onClose={closeModal} titleStyle='digits-default'>
                   <OrderInfo />
                 </Modal>
               </OnlyAuth>

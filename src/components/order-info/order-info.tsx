@@ -1,21 +1,28 @@
 import React, { FC, useMemo, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useSelector } from '../../services/store';
+import { useSelector, useDispatch } from '../../services/store';
 
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
 import { getIngredientsList } from '../../services/ingredients/slice';
-import { getFeedOrders } from '../../services/feed/slice';
+import { getOrderInfoByNumber } from '../../services/orderInfo/actions';
+import { getOrderInfoData } from '../../services/orderInfo/slice';
 
 export const OrderInfo: FC = () => {
   /** TODO: взять переменные orderData и ingredients из стора */
-  const { number } = useParams();
-  const orderData = useSelector(getFeedOrders).find(
-    (el) => el.number === Number(number)
-  );
+  const params = useParams();
+  const dispatch = useDispatch();
+  
+  useEffect(() => {
+    if (typeof params.number === 'string') {
+      dispatch(getOrderInfoByNumber(+params.number));
+    }
+  }, []);
 
+  const orderData = useSelector(getOrderInfoData);
   const ingredients = useSelector(getIngredientsList);
+
 
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {
@@ -42,7 +49,7 @@ export const OrderInfo: FC = () => {
         }
 
         return acc;
-      },
+      }, 
       {}
     );
 
