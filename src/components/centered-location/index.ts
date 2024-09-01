@@ -1,0 +1,1 @@
+import { CenteredLocation } from './centered-location';
