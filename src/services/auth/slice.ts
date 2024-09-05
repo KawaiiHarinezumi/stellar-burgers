@@ -2,12 +2,12 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
 import { loginUser, logoutUser, registerUser, updateUser } from './actions';
 
-interface TAuthState {
+export interface TAuthState {
   user: TUser | null;
   isAuthChecked: boolean;
 }
 
-const initialState: TAuthState = {
+export const initialState: TAuthState = {
   user: null,
   isAuthChecked: false
 };
@@ -36,7 +36,7 @@ export const authSlice = createSlice({
       .addCase(loginUser.pending, (state) => {
         state.isAuthChecked = true;
       })
-      .addCase(loginUser.rejected, (state, action) => {
+      .addCase(loginUser.rejected, (state) => {
         state.isAuthChecked = false;
       })
       .addCase(loginUser.fulfilled, (state, action) => {

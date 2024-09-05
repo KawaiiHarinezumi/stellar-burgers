@@ -13,7 +13,7 @@ import { feedSlice } from './feed/slice';
 import { orderSlice } from './order/slice';
 import { orderInfoSlice } from './orderInfo/slice';
 
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
   [authSlice.reducerPath]: authSlice.reducer,
   [ingredientsSlice.reducerPath]: ingredientsSlice.reducer,
   [constructorSlice.reducerPath]: constructorSlice.reducer,
@@ -22,7 +22,7 @@ const rootReducer = combineReducers({
   [orderInfoSlice.reducerPath]: orderInfoSlice.reducer
 });
 
-const store = configureStore({
+export const store = configureStore({
   reducer: rootReducer,
   devTools: process.env.NODE_ENV !== 'production'
 });
