@@ -8,7 +8,7 @@ type TIngredientsState = {
   ingredients: TIngredient[];
 };
 
-const initialState: TIngredientsState = {
+export const initialState: TIngredientsState = {
   isLoading: false,
   ingredients: []
 };
@@ -46,7 +46,7 @@ export const ingredientsSlice = createSlice({
         state.ingredients = action.payload;
       })
       .addCase(getIngredients.rejected, (state) => {
-        state.isLoading = true;
+        state.isLoading = false;
         state.ingredients = [];
       });
   }

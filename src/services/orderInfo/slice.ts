@@ -6,7 +6,7 @@ interface TOrderInfoState {
   orderInfoData: TOrder | null;
 }
 
-const initialState: TOrderInfoState = {
+export const initialState: TOrderInfoState = {
   orderInfoData: null
 };
 
